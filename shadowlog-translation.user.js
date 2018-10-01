@@ -1,13 +1,12 @@
 // ==UserScript==
 // @name         Shadowlog Translation
 // @namespace    https://github.com/zeluqa/
-// @version      0.2
+// @version      0.3
 // @description  Shadowlog english translation userscript
 // @author       zeluqa
-// @match        *://shadowlog.com/mypage/*
-// @match        *://shadowlog.com/trend/*
-// @match        *://shadowlog.com/user/*
+// @match        *://shadowlog.com/*
 // @grant        GM_addStyle
+// @run-at       document-end
 // ==/UserScript==
 
 GM_addStyle ( `
@@ -35,6 +34,18 @@ GM_addStyle ( `
 
 (function() {
     'use strict';
+    /* Prototype for chart data translation
+    // This function is going to be stringified, and injected in the page
+    var code = function() {
+        // window is identical to the page's window, since this script is injected
+        Object.defineProperty(window, 'pieData', {
+            value: [{"value":24.8,"color":"#6C7A89","label":"Blood"},{"value":21.1,"color":"#a979ad","label":"Shadow"},{"value":12,"color":"#3A539B","label":"Rune"},{"value":11.4,"color":"#aadbf2","label":"Sword"},{"value":10.3,"color":"#D2527F","label":"Haven"},{"value":9.7,"color":"#cd5638","label":"Dragon"},{"value":7.9,"color":"#7fc170","label":"Forest"},{"value":3,"color":"#0077C0","label":"Portal"}]
+        });
+    };
+    var script = document.createElement('script');
+    script.textContent = '(' + code + ')()';
+    (document.head||document.documentElement).appendChild(script);
+    script.parentNode.removeChild(script);*/
 
     var words_overlay = {
         '先週の対戦解析ログ':'Last Week\'s Match Data',
@@ -74,12 +85,14 @@ GM_addStyle ( `
         '新しい戦績を追加':'Add New Record',
         'マイデッキ管理':'Manage Deck',
         'プロフィール編集':'Edit Profile',
-        '編集':'Edit',
-        '勝敗':'Win',
         'ターン数表示':'Show turns',
         '省略している項目を開く':'Show omitted details',
         '常に｢省略している項目｣を開いた状態にしておく':'Show omitted details by default',
         //'対戦で記録しておきたい事項をメモできます。(最大200文字)':'Note about the match (Max. 200 char)',
+        '戦績の追加・編集に失敗しました。':'Failed to add add/edit your entry.',
+        '相手のリーダーを正しく選んで下さい。':'Please select enemy class.',
+        '自分のリーダーを正しく選んで下さい。':'Please select your class.',
+        '先攻・後攻を正しく選んで下さい。':'Please select play order.',
 
         //Words exclusive in https://shadowlog.com/mypage/
         'あなたの戦績一覧':'Match Record Summary',
@@ -240,23 +253,50 @@ GM_addStyle ( `
         '総合':'All Class',
     };
     var words_login = {
-        'ログイン画面':'Log In Screen',
+        'ログイン画面へ':'Log in',
+        'ログイン画面':'Log In',
         'OpenIDでログイン':'Log In Using OpenID',
         'Twitterアカウント':'Twitter Account',
         'Facebookアカウント':'Facebook Account',
         'Googleアカウント':'Google Account',
         'でログイン':'Log In',
         'パスワードを忘れてしまった..':'Forgot Password',
+        'パスワードリマインダー':'Password Reset',
+        'ログインパスワードがわからないという方へ':'Log In Password Reset',
+        'ユーザー名が一致しません。もう1度正しく入力して下さい。':'Your inputted username is wrong, please try again.',
+        '登録したメールアドレスからパスワードの変更を行うことができます。':'You can reset your registered account\'s password.',
+        '以下のフォームにメールアドレスを正しく入力して下さい。':'Please enter your email address in the form below.',
+        'パスワード変更用URLを送信しました。':'URL to reset your password has been sent to your email address.',
+        'メールアドレスへパスワード変更用のURLを記載したメールを送信しました。':'Please check your email address for the URL to reset your password.',
+        'メールアドレスもわからない、上手くメールが届かないという方は':'In case of forgotten email address or mail not being sent properly,',
+        'お手数ですが':'Please use the',
+        'お問い合わせ':'Inqury',
+        'へご連絡下さい。':'function to contact us.',
+        'パスワードの変更を行います。':'Password will be resetted.',
+        '以下の項目を全て入力して下さい。':'Please fill out the form below.',
+        'あなたのユーザー名':'Username',
+        '新しく設定したいパスワードを入力してください。':'New Password',
+        '確認のためパスワードをもう1度入力してください。':'New Password Confirmation',
+        'パスワードは正しく変更されました。':'Password is successfully resetted.',
+        '変更が失敗してしまう場合は':'When password resetting failed, please use the',
+        'からご連絡下さい。':'function to contact us.',
     };
     var words_register = {
         'このサイトのサービスを利用するためには、簡単なユーザー登録を行って頂く必要があります。':'Please create an account to use the services provided by this site.',
         '会員登録にかかる費用は全て無料です。':'You can register an account for free.',
-        'ユーザー新規登録':'User Registration',
+        '登録に失敗しました。':'Registration failed.',
+        'は既に登録済みです。':' is already registered.',
         '登録したいユーザー名':'Username',
         '登録したいメールアドレス':'Email Address',
         'OpenIDでアカウント登録':'Sign Up Using OpenID',
         'で登録する':'Sign Up',
+        'まだ戦績の記録がありません。':'You don\'t have any match recorded yet.',
+        '画面左上の':'Use the',
+        'ボタンを押して戦績を追加して下さい。':'button to add matches.',
     };
+    var words_main = {
+        '新規ユーザー登録':'New User Registration',
+    }
     var words_basic = {
         //Collection of words/texts that are used in more than one phrasing
         '先':'1st',
@@ -270,6 +310,10 @@ GM_addStyle ( `
         'ユーザー登録':'Register',
         'メールアドレス':'Email Address',
         'パスワード':'Password',
+        'ユーザー新規登録':'User Registration',
+        '編集':'Edit',
+        '勝敗':'Win',
+
 
         '年':'/',
         '月':'/',
@@ -293,6 +337,7 @@ GM_addStyle ( `
     for(key in words_classes) words[key] = words_classes[key];
     for(key in words_login) words[key] = words_login[key];
     for(key in words_register) words[key] = words_register[key];
+    for(key in words_main) words[key] = words_main[key];
     for(key in words_basic) words[key] = words_basic[key];
 
     function translate() {
@@ -355,13 +400,33 @@ GM_addStyle ( `
         if (window.location.href.match("user/login")) (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Log In");
         //Sign up button
         if (window.location.href.match("user/signup")) (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Sign Up");
-        //Change placeholder text in /mypage/
-        if (document.querySelector("#date1")) (document.querySelector("#date1")).setAttribute("placeholder", "From");
-        if (document.querySelector("#date2")) (document.querySelector("#date2")).setAttribute("placeholder", "To");
-        //Submit button text in /mypage/
-        if (document.querySelector(".submBtn")) (document.querySelector(".submBtn")).setAttribute("value", "Search");
-        //Memo in /mypage/add/
-        if (document.querySelector(".memo")) (document.querySelector(".memo")).setAttribute("placeholder", "Note about the match (Max. 200 char)");
+        //Memo and order in /mypage/add
+        if ((window.location.href).match("/mypage/add")){
+            //Memo placeholder text
+            (document.querySelector(".memo")).setAttribute("placeholder", "Note about the match (Max. 200 char)");
+            (document.querySelector("label[for=ord1]")).setAttribute("style", "position:relative;");
+            (document.querySelector("label[for=ord2]")).setAttribute("style", "position:relative;");
+            //Add 1st text overlay
+            if (!((document.querySelector("label[for=ord1]").innerHTML).match("h3"))) {
+                document.querySelector("label[for=ord1]").innerHTML = document.querySelector("label[for=ord1]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 28%;bottom: 82%;">1st</h3>`
+            }
+            //Add 2nd text overlay
+            if (!((document.querySelector("label[for=ord2]").innerHTML).match("h3"))) {
+                document.querySelector("label[for=ord2]").innerHTML = document.querySelector("label[for=ord2]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 25%;bottom: 82%;">2nd</h3>`
+            }
+        } else if ((window.location.href).match("/mypage")) {
+            //Change placeholder text in /mypage
+            (document.querySelector("#date1")).setAttribute("placeholder", "From");
+            (document.querySelector("#date2")).setAttribute("placeholder", "To");
+            //Submit button text in /mypage
+            (document.querySelector(".submBtn")).setAttribute("value", "Search");
+        }
+        if ((window.location.href).match("/reminder.php")) {
+            (document.querySelector("table.form input[type=text]")).setAttribute("placeholder", "Username");
+        } else if ((window.location.href).match("/reminder")) {
+            (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Reset Password");
+            (document.querySelector("table.form input[type=text]")).setAttribute("placeholder", "Email Address");
+        }
     }
 
     window.addEventListener("load", function(){translate()}, false);
