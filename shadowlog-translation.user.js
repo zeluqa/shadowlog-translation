@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Shadowlog Translation
 // @namespace    https://github.com/zeluqa/
-// @version      0.3
+// @version      0.4
 // @description  Shadowlog english translation userscript
 // @author       zeluqa
 // @match        *://shadowlog.com/*
@@ -88,7 +88,7 @@ GM_addStyle ( `
         'ターン数表示':'Show turns',
         '省略している項目を開く':'Show omitted details',
         '常に｢省略している項目｣を開いた状態にしておく':'Show omitted details by default',
-        //'対戦で記録しておきたい事項をメモできます。(最大200文字)':'Note about the match (Max. 200 char)',
+        '対戦で記録しておきたい事項をメモできます。(最大200文字)':'Note about the match (Max. 200 char)',
         '戦績の追加・編集に失敗しました。':'Failed to add add/edit your entry.',
         '相手のリーダーを正しく選んで下さい。':'Please select enemy class.',
         '自分のリーダーを正しく選んで下さい。':'Please select your class.',
@@ -108,6 +108,8 @@ GM_addStyle ( `
         '相手のリーダー':'Enemy Class',
         '自分のデッキタイプを細かく指定':'My Deck Archetype',
         '相手のデッキタイプを細かく指定':'Enemy Deck Archetype',
+        'この日から..':'From',
+        'この日まで..':'To',
         '絞り込む':'Search',
         '手番':'Order',
         '対戦形式':'Format',
@@ -255,13 +257,17 @@ GM_addStyle ( `
     var words_login = {
         'ログイン画面へ':'Log in',
         'ログイン画面':'Log In',
+        'ログインに失敗しました。':'Log in failed.',
+        '登録メールアドレスでログイン':'Log In',
         'OpenIDでログイン':'Log In Using OpenID',
         'Twitterアカウント':'Twitter Account',
         'Facebookアカウント':'Facebook Account',
         'Googleアカウント':'Google Account',
         'でログイン':'Log In',
         'パスワードを忘れてしまった..':'Forgot Password',
+        '変更する':'Reset Password',
         'パスワードリマインダー':'Password Reset',
+        'メールアドレスを入力...':'Email Address',
         'ログインパスワードがわからないという方へ':'Log In Password Reset',
         'ユーザー名が一致しません。もう1度正しく入力して下さい。':'Your inputted username is wrong, please try again.',
         '登録したメールアドレスからパスワードの変更を行うことができます。':'You can reset your registered account\'s password.',
@@ -282,6 +288,7 @@ GM_addStyle ( `
         'からご連絡下さい。':'function to contact us.',
     };
     var words_register = {
+        '新規アカウントを登録する':'Sign Up',
         'このサイトのサービスを利用するためには、簡単なユーザー登録を行って頂く必要があります。':'Please create an account to use the services provided by this site.',
         '会員登録にかかる費用は全て無料です。':'You can register an account for free.',
         '登録に失敗しました。':'Registration failed.',
@@ -309,11 +316,11 @@ GM_addStyle ( `
         'ログイン':'Log in',
         'ユーザー登録':'Register',
         'メールアドレス':'Email Address',
+        'ユーザー名':'Username',
         'パスワード':'Password',
         'ユーザー新規登録':'User Registration',
         '編集':'Edit',
         '勝敗':'Win',
-
 
         '年':'/',
         '月':'/',
@@ -340,96 +347,99 @@ GM_addStyle ( `
     for(key in words_main) words[key] = words_main[key];
     for(key in words_basic) words[key] = words_basic[key];
 
-    function translate() {
-        //alert(typeof(window.location.href));
-        var regexs = [], replacements = [],
-            tagsWhitelist = ['PRE', 'BLOCKQUOTE', 'CODE', 'INPUT', 'BUTTON', 'TEXTAREA'],
-            rIsRegexp = /^\/(.+)\/([gim]+)?$/,
-            word, text, texts, i, userRegexp;
+    var regexs = [], replacements = [],
+        tagsWhitelist = ['PRE', 'BLOCKQUOTE', 'CODE', 'INPUT', 'BUTTON', 'TEXTAREA'],
+        rIsRegexp = /^\/(.+)\/([gim]+)?$/,
+        word, text, texts, i, j, len, userRegexp;
 
-        // prepareRegex by JoeSimmons
-        // used to take a string and ready it for use in new RegExp()
-        function prepareRegex(string) {
-            return string.replace(/([\[\]\^\&\$\.\(\)\?\/\\\+\{\}\|])/g, '\\$1');
-        }
+    // used to take a string and ready it for use in new RegExp()
+    function prepareRegex(string) {
+        return string.replace(/([\[\]\^\&\$\.\(\)\?\/\\\+\{\}\|])/g, '\\$1');
+    }
 
-        // function to decide whether a parent tag will have its text replaced or not
-        function isTagOk(tag) {
-            return tagsWhitelist.indexOf(tag) === -1;
-        }
+    // function to decide whether a parent tag will have its text replaced or not
+    function isTagOk(tag) {
+        return tagsWhitelist.indexOf(tag) === -1;
+    }
 
-        delete words['']; // so the user can add each entry ending with a comma,
-        // I put an extra empty key/value pair in the object.
-        // so we need to remove it before continuing
+    delete words['']; // Delete empty key/value pair
 
-        // convert the 'words' JSON object to an Array
-        for (word in words) {
-            if ( typeof word === 'string' && words.hasOwnProperty(word) ) {
-                userRegexp = word.match(rIsRegexp);
+    // convert the 'words' JSON object to an Array
+    for (word in words) {
+        if ( typeof word === 'string' && words.hasOwnProperty(word) ) {
+            userRegexp = word.match(rIsRegexp);
 
-                // add the search/needle/query
-                if (userRegexp) {
-                    regexs.push(
-                        new RegExp(userRegexp[1], 'g')
-                    );
-                } else {
-                    regexs.push(
-                        new RegExp(prepareRegex(word).replace(/\\?\*/g, function (fullMatch) {
-                            return fullMatch === '\\*' ? '*' : '[^ ]*';
-                        }), 'g')
-                    );
-                }
-
-                // add the replacement
-                replacements.push( words[word] );
+            // add the search/needle/query
+            if (userRegexp) {
+                regexs.push(
+                    new RegExp(userRegexp[1], 'g')
+                );
+            } else {
+                regexs.push(
+                    new RegExp(prepareRegex(word).replace(/\\?\*/g, function (fullMatch) {
+                        return fullMatch === '\\*' ? '*' : '[^ ]*';
+                    }), 'g')
+                );
             }
-        }
 
-        //Text replacement
-        texts = document.evaluate('//body//text()[ normalize-space(.) != "" ]', document, null, 6, null);
-        for (i = 0; text = texts.snapshotItem(i); i += 1) {
-            if ( isTagOk(text.parentNode.tagName) ) {
-                regexs.forEach(function (value, index) {
-                    text.data = text.data.replace( value, replacements[index] );
-                });
-            }
-        }
-
-        //HTML attribute replacement
-        //Log in button
-        if (window.location.href.match("user/login")) (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Log In");
-        //Sign up button
-        if (window.location.href.match("user/signup")) (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Sign Up");
-        //Memo and order in /mypage/add
-        if ((window.location.href).match("/mypage/add")){
-            //Memo placeholder text
-            (document.querySelector(".memo")).setAttribute("placeholder", "Note about the match (Max. 200 char)");
-            (document.querySelector("label[for=ord1]")).setAttribute("style", "position:relative;");
-            (document.querySelector("label[for=ord2]")).setAttribute("style", "position:relative;");
-            //Add 1st text overlay
-            if (!((document.querySelector("label[for=ord1]").innerHTML).match("h3"))) {
-                document.querySelector("label[for=ord1]").innerHTML = document.querySelector("label[for=ord1]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 28%;bottom: 82%;">1st</h3>`
-            }
-            //Add 2nd text overlay
-            if (!((document.querySelector("label[for=ord2]").innerHTML).match("h3"))) {
-                document.querySelector("label[for=ord2]").innerHTML = document.querySelector("label[for=ord2]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 25%;bottom: 82%;">2nd</h3>`
-            }
-        } else if ((window.location.href).match("/mypage")) {
-            //Change placeholder text in /mypage
-            (document.querySelector("#date1")).setAttribute("placeholder", "From");
-            (document.querySelector("#date2")).setAttribute("placeholder", "To");
-            //Submit button text in /mypage
-            (document.querySelector(".submBtn")).setAttribute("value", "Search");
-        }
-        if ((window.location.href).match("/reminder.php")) {
-            (document.querySelector("table.form input[type=text]")).setAttribute("placeholder", "Username");
-        } else if ((window.location.href).match("/reminder")) {
-            (document.querySelector("table.form input[type=submit]")).setAttribute("value", "Reset Password");
-            (document.querySelector("table.form input[type=text]")).setAttribute("placeholder", "Email Address");
+            // add the replacement
+            replacements.push( words[word] );
         }
     }
 
-    window.addEventListener("load", function(){translate()}, false);
-    document.addEventListener('change', function(){translate()}, false);
+    //Translation method using regexp
+    //More flexible but higher complexity
+    function translate_regexp() {
+        //Text replacement
+        texts = document.evaluate('//input|//textarea|//body//text()[ normalize-space(.) != "" ]', document, null, 6, null);
+        for (i = 0; text = texts.snapshotItem(i); i++) {
+            if ( isTagOk(text.parentNode.tagName) ) {
+                if(text.tagName) {
+                    for (j = 0, len = regexs.length; j < len; j++) {
+                        if (text.getAttribute("value")) text.setAttribute("value", text.getAttribute("value").replace(regexs[j], replacements[j]));
+                        if (text.getAttribute("placeholder")) text.setAttribute("placeholder", text.getAttribute("placeholder").replace(regexs[j], replacements[j]));
+                    }
+                } else {
+                    for (j = 0, len = regexs.length; j < len; j++) {
+                        text.data = text.data.replace( regexs[j], replacements[j] );
+                    }
+                }
+            }
+        }
+    }
 
+    //Translation method using json key value
+    //Less complexity but needs exact string match
+    function translate_json() {
+        //Text replacement
+        texts = document.evaluate('//input|//textarea|//body//text()[ normalize-space(.) != "" ]', document, null, 6, null);
+        for (i = 0; text = texts.snapshotItem(i); i++) {
+            if ( isTagOk(text.parentNode.tagName) ) {
+                if(text.tagName) {
+                    if(words[text.getAttribute("placeholder")]) text.setAttribute("placeholder", words[text.getAttribute("placeholder")]);
+                    if(words[text.getAttribute("value")]) text.setAttribute("value", words[text.getAttribute("value")]);
+                } else {
+                    if(words[text.data]) text.data = words[text.data];
+                }
+            }
+        }
+    }
+
+    //Overlay text for 1st 2nd play order in /mypage/add
+    if ((window.location.href).match("/mypage/add")){
+        (document.querySelector("label[for=ord1]")).setAttribute("style", "position:relative;");
+        (document.querySelector("label[for=ord2]")).setAttribute("style", "position:relative;");
+        //Add 1st text overlay
+        if (!((document.querySelector("label[for=ord1]").innerHTML).match("h3"))) {
+            document.querySelector("label[for=ord1]").innerHTML = document.querySelector("label[for=ord1]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 28%;bottom: 82%;">1st</h3>`
+        }
+        //Add 2nd text overlay
+        if (!((document.querySelector("label[for=ord2]").innerHTML).match("h3"))) {
+            document.querySelector("label[for=ord2]").innerHTML = document.querySelector("label[for=ord2]").innerHTML + `<h3 style="position: absolute;color: #d8d8d8;left: 25%;bottom: 82%;">2nd</h3>`
+        }
+    }
+
+    window.addEventListener("load", function(){translate_regexp()}, false);
+    var form_button = document.querySelector("table.form");
+    if (form_button) form_button.addEventListener('change', function(){translate_regexp()}, false); //Handles list change in /mypage/add
 })();
