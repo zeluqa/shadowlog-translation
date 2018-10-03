@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name         Shadowlog Translation
 // @namespace    https://github.com/zeluqa/
-// @version      0.4
+// @version      1.0
 // @description  Shadowlog english translation userscript
 // @author       zeluqa
 // @match        *://shadowlog.com/*
 // @grant        GM_addStyle
-// @run-at       document-end
 // ==/UserScript==
 
 GM_addStyle ( `
@@ -34,18 +33,6 @@ GM_addStyle ( `
 
 (function() {
     'use strict';
-    /* Prototype for chart data translation
-    // This function is going to be stringified, and injected in the page
-    var code = function() {
-        // window is identical to the page's window, since this script is injected
-        Object.defineProperty(window, 'pieData', {
-            value: [{"value":24.8,"color":"#6C7A89","label":"Blood"},{"value":21.1,"color":"#a979ad","label":"Shadow"},{"value":12,"color":"#3A539B","label":"Rune"},{"value":11.4,"color":"#aadbf2","label":"Sword"},{"value":10.3,"color":"#D2527F","label":"Haven"},{"value":9.7,"color":"#cd5638","label":"Dragon"},{"value":7.9,"color":"#7fc170","label":"Forest"},{"value":3,"color":"#0077C0","label":"Portal"}]
-        });
-    };
-    var script = document.createElement('script');
-    script.textContent = '(' + code + ')()';
-    (document.head||document.documentElement).appendChild(script);
-    script.parentNode.removeChild(script);*/
 
     var words_overlay = {
         '先週の対戦解析ログ':'Last Week\'s Match Data',
@@ -55,11 +42,6 @@ GM_addStyle ( `
         'マイページ':'My Page',
     };
     var words_trends = {
-        /* Use \\* to match actual asterisks instead of using it as a wildcard
-        Syntax: 'Search word' : 'Replace word',
-        '/\\bD\\b/g' : '[D]',
-        More complex words/text should be on top to prevent incomplete text replacement*/
-
         //Words exclusive in https://shadowlog.com/trend/
         '全ランク帯':'All Ranks',
         '総合 対戦解析ログ':'All Class Match Data',
@@ -78,10 +60,16 @@ GM_addStyle ( `
         '使用デッキタイプ':'Used Deck Archetype',
         'ランクマッチ':'Ranked',
         '2Pick対戦':'Take Two',
-        '対戦解析ログ':'Match Data'
+        '対戦解析ログ':'Match Data',
+
+        '先行で勝利した割合（先攻勝率）':'Winrate going 1st',
+        '後攻で勝利した割合（後攻勝率）':'Winrate going 2nd',
+
+        '※同じデッキ同士での勝率は50%固定になりますので、表示を省略しています。':'※Same deck matchup is fixed at 50% winrate, therefore it will not be written in the table.',
     };
     var words_mypage = {
         //Words exclusive in https://shadowlog.com/mypage/add
+        '12以上':'12+',
         '新しい戦績を追加':'Add New Record',
         'マイデッキ管理':'Manage Deck',
         'プロフィール編集':'Edit Profile',
@@ -127,6 +115,51 @@ GM_addStyle ( `
         'デッキタイプ':'Deck Archetype',
         //'「十禍絶傑」に対応しました。随時新デッキタイプ追加していきます。':'Omen of the Ten',
     };
+    var words_analyze = {
+        '解析の期間指定':'Period Filter',
+        '対戦形式の指定':'Rank Filter',
+        '新パック実装以降':'Only the Latest Expansion',
+        '全ての期間':'All Period',
+        '期間を指定':'Date Range',
+        '入力':'Enter',
+        '全ランクマッチ':'All Rank',
+        '使用したリーダー解析':'Used Class Comparison',
+        '使用したリーダー':'Class',
+        '対戦数':'Matches',
+        '使用したデッキ':'Deck Archetype',
+        '全勝率':'Win Rate',
+        '使用割合順':'Order by Play Rate',
+        '対戦数順':'Order by Matches',
+        '全勝率順':'Order by Winrate',
+        'ランクマッチ戦でのみの解析になります。':'ランクマッチ戦でのみの解析になります。',
+
+        '対戦相手のリーダー解析':'Enemy Class Comparison',
+        '対戦相手のリーダー':'Enemy Class',
+        '遭遇確率':'Encounter Rate',
+        '遭遇数':'Matches',
+        '対戦相手のデッキ解析':'Enemy Deck Archetype Summary',
+        '対戦相手のデッキ':'Enemy Deck Archetype',
+        'あなたの勝率':'My Win Rate',
+        '対戦割合':'Encounter Rate',
+        '対戦割合順':'Order by Encounter Rate',
+        'あなたの勝率順':'Order by My Win Rate',
+
+        'あなたの勝率の推移':'My Win Rate Trends',
+        '現在の勝率':'Current Win Rate',
+        '対戦回数':'Number of Matches',
+        'あなたの勝利数':'Number of Victories',
+
+        '解析したいデッキを選ぶ':'Select Deck to Analyze',
+        '手番別の勝敗解析':'Play Order',
+        '先攻':'1st',
+        '後攻':'2nd',
+        '勝利':'Victories',
+        '敗北':'Losses',
+        '合計':'Total',
+
+        '※過去30戦の勝率の推移をグラフ化しています。':'※Graph is based on your past 30 matches.',
+        '※過去30戦分の勝率の推移をグラフ化しています。':'※Graph is based on your past 30 matches.',
+    };
     var words_archetypes = {
         //Forest Archetypes
         'エルフ全般':'Forest in General',
@@ -160,7 +193,7 @@ GM_addStyle ( `
         '疾走ランプドラゴン':'Storm Ramp Dragon',
         'ランプドラゴン':'Ramp Dragon',
         'リントヴルムドラゴン':'Lindworm Dragon',
-        'ジャバウォックドラゴ*':'Jabberwock Dragon',
+        'ジャバウォックドラゴン':'Jabberwock Dragon',
         'ミッドレンジドラゴン':'Midrange Dragon',
         '原初ドラゴン':'Prime Dragon Keeper Dragon',
         'ニュートラルドラゴン':'Neutral Dragon',
@@ -190,7 +223,7 @@ GM_addStyle ( `
         'ドロシー超越ウィッチ':'Daria DShift Rune',
         '暗黒ウィッチ':'Abyss Summoner Rune',
         'マナリアウィッチ':'Mysteria Rune',
-        'ギガントキマイラウィ*':'Giant Chimera Rune',
+        'ギガントキマイラウィッチ':'Giant Chimera Rune',
         '超越ウィッチ':'Dimension Shift Rune',
         '秘術ウィッチ':'Dirt Rune',
         'ドロシーウィッチ':'Daria Rune',
@@ -204,7 +237,7 @@ GM_addStyle ( `
         'ミッドレンジヴァンプ':'Midrange Blood',
         'コントロールヴァンプ':'Control Blood',
         '蝙蝠ヴァンパイア':'Darkfeast Bat Blood',
-        'ヨルムンガンドヴァン*':'Jormungand Blood',
+        'ヨルムンガンドヴァンパイア':'Jormungand Blood',
         'アグロヴァンパイア':'Aggro Blood',
         '復讐ヴァンパイア':'Vengeance Blood',
         'OTKヴァンパイア':'OTK Blood',
@@ -214,14 +247,14 @@ GM_addStyle ( `
 
         //Haven Archetypes
         'ビショップ全般':'Haven in General',
-        'エイラセラフビショッ*':'Elana Seraph Haven',
+        'エイラセラフビショップ':'Elana Seraph Haven',
         '天狐ビショップ':'Tenko Haven',
         '聖獅子ビショップ':'Holy Lion Haven',
         '疾走ビショップ':'Storm Haven',
         'イージスビショップ':'Aegis Haven',
         '教会ビショップ':'Summit Temple Haven',
-        'ニュートラルビショッ*':'Neutral Haven',
-        'コントロールビショッ*':'Control Haven',
+        'ニュートラルビショップ':'Neutral Haven',
+        'コントロールビショップ':'Control Haven',
         '陽光ビショップ':'Guardian Sun Haven',
         '燭台ビショップ':'Candelabra Haven',
         'セラフビショップ':'Seraph Haven',
@@ -236,7 +269,7 @@ GM_addStyle ( `
         '操り人形ネメシス':'Puppet Portal',
         'ミッドレンジネメシス':'Midrange Portal',
         'クロノスネメシス':'Chronos Portal',
-        'アーティファクトネメ*':'Artifact Portal',
+        'アーティファクトネメシス':'Artifact Portal',
         'アグロネメシス':'Aggro Portal',
         'コントロールネメシス':'Control Portal',
     };
@@ -270,27 +303,16 @@ GM_addStyle ( `
         'メールアドレスを入力...':'Email Address',
         'ログインパスワードがわからないという方へ':'Log In Password Reset',
         'ユーザー名が一致しません。もう1度正しく入力して下さい。':'Your inputted username is wrong, please try again.',
-        '登録したメールアドレスからパスワードの変更を行うことができます。':'You can reset your registered account\'s password.',
-        '以下のフォームにメールアドレスを正しく入力して下さい。':'Please enter your email address in the form below.',
         'パスワード変更用URLを送信しました。':'URL to reset your password has been sent to your email address.',
-        'メールアドレスへパスワード変更用のURLを記載したメールを送信しました。':'Please check your email address for the URL to reset your password.',
-        'メールアドレスもわからない、上手くメールが届かないという方は':'In case of forgotten email address or mail not being sent properly,',
-        'お手数ですが':'Please use the',
-        'お問い合わせ':'Inqury',
-        'へご連絡下さい。':'function to contact us.',
         'パスワードの変更を行います。':'Password will be resetted.',
         '以下の項目を全て入力して下さい。':'Please fill out the form below.',
         'あなたのユーザー名':'Username',
         '新しく設定したいパスワードを入力してください。':'New Password',
         '確認のためパスワードをもう1度入力してください。':'New Password Confirmation',
         'パスワードは正しく変更されました。':'Password is successfully resetted.',
-        '変更が失敗してしまう場合は':'When password resetting failed, please use the',
-        'からご連絡下さい。':'function to contact us.',
     };
     var words_register = {
         '新規アカウントを登録する':'Sign Up',
-        'このサイトのサービスを利用するためには、簡単なユーザー登録を行って頂く必要があります。':'Please create an account to use the services provided by this site.',
-        '会員登録にかかる費用は全て無料です。':'You can register an account for free.',
         '登録に失敗しました。':'Registration failed.',
         'は既に登録済みです。':' is already registered.',
         '登録したいユーザー名':'Username',
@@ -298,8 +320,6 @@ GM_addStyle ( `
         'OpenIDでアカウント登録':'Sign Up Using OpenID',
         'で登録する':'Sign Up',
         'まだ戦績の記録がありません。':'You don\'t have any match recorded yet.',
-        '画面左上の':'Use the',
-        'ボタンを押して戦績を追加して下さい。':'button to add matches.',
     };
     var words_main = {
         '新規ユーザー登録':'New User Registration',
@@ -322,12 +342,6 @@ GM_addStyle ( `
         '編集':'Edit',
         '勝敗':'Win',
 
-        '年':'/',
-        '月':'/',
-        '日':'',
-        '時':':',
-        '分':'',
-
         /* Alternative Translation but looks bad
         '年':'Year,',
         '月':'Month,',
@@ -335,22 +349,77 @@ GM_addStyle ( `
         '時':'Hour,',
         '分':'Minute', */
     };
+    var words_regexp = {
+        /* Use \\* to match actual asterisks instead of using it as a wildcard
+        Syntax: 'Search word' : 'Replace word',
+        '/\\bD\\b/g' : '[D]',
+        More complex words/text should be on top to prevent incomplete text replacement*/
 
-    var words = {}; //Combined words list
-    for(var key in words_overlay) words[key] = words_overlay[key];
-    for(key in words_trends) words[key] = words_trends[key];
-    for(key in words_mypage) words[key] = words_mypage[key];
-    for(key in words_archetypes) words[key] = words_archetypes[key];
-    for(key in words_classes) words[key] = words_classes[key];
-    for(key in words_login) words[key] = words_login[key];
-    for(key in words_register) words[key] = words_register[key];
-    for(key in words_main) words[key] = words_main[key];
-    for(key in words_basic) words[key] = words_basic[key];
+        //Words for regexp text replacement method
+        'ジャバウォックドラゴ*':'Jabberwock Dragon',
+        'ヨルムンガンドヴァン*':'Jormungand Blood',
+        'ギガントキマイラウィ*':'Giant Chimera Rune',
+        'ニュートラルビショッ*':'Neutral Haven',
+        'エイラセラフビショッ*':'Elana Seraph Haven',
+        'コントロールビショッ*':'Control Haven',
+        'アーティファクトネメ*':'Artifact Portal',
+
+        '新しく戦績を記録する':'Add a new match record',
+        '記録した戦績を修正する':'Edit past match record',
+        'フリー':'Private',
+        'ローテ':'Rotation',
+
+        '対戦解析ログ':'Match Data',
+        '算出に使った対戦数':'Total Recorded Number of Matches',
+
+        'このサイトのサービスを利用するためには、簡単なユーザー登録を行って頂く必要があります。':'Please create an account to use the services provided by this site.',
+        '会員登録にかかる費用は全て無料です。':'You can register an account for free.',
+        '登録したメールアドレスからパスワードの変更を行うことができます。':'You can reset your registered account\'s password.',
+        '以下のフォームにメールアドレスを正しく入力して下さい。':'Please enter your email address in the form below.',
+        'メールアドレスへパスワード変更用のURLを記載したメールを送信しました。':'Please check your email address for the URL to reset your password.',
+        'メールアドレスもわからない、上手くメールが届かないという方は':'In case of forgotten email address or mail not being sent properly,',
+        'お手数ですが':'Please use the',
+        'お問い合わせ':'Inqury',
+        'へご連絡下さい。':'function to contact us.',
+        '変更が失敗してしまう場合は':'When password resetting failed, please use the',
+        'からご連絡下さい。':'function to contact us.',
+        '画面左上の':'Use the',
+        'ボタンを押して戦績を追加して下さい。':'button to add matches.',
+        'ランクマッチ戦でのみの解析になります。':'This chart only lists ranked matches.',
+        '平均勝率':'Average Win Rate',
+        '対戦デッキ別の勝率解析':'Deck Matchup Win Rate',
+        '解析':'Analysis',
+
+        '年':'/',
+        '月':'/',
+        '日':'',
+        '時':':',
+        '分':'',
+        '回':'',
+    }
 
     var regexs = [], replacements = [],
-        tagsWhitelist = ['PRE', 'BLOCKQUOTE', 'CODE', 'INPUT', 'BUTTON', 'TEXTAREA'],
+        tagsWhitelist = ['PRE', 'BLOCKQUOTE', 'CODE', 'INPUT', 'BUTTON', 'TEXTAREA', 'SCRIPT'],
+        attr = ['value', 'placeholder'],
         rIsRegexp = /^\/(.+)\/([gim]+)?$/,
-        word, text, texts, i, j, len, userRegexp;
+        word, text, texts, i, j, k, len, userRegexp, key, obj;
+
+    var words_json = {}; //Combined words list
+    var words = {}; //Combined words list later to be converted to regexp
+
+    for(key in words_overlay) words_json[key] = words_overlay[key];
+    for(key in words_trends) words_json[key] = words_trends[key];
+    for(key in words_mypage) words_json[key] = words_mypage[key];
+    for(key in words_analyze) words_json[key] = words_analyze[key];
+    for(key in words_archetypes) words_json[key] = words_archetypes[key];
+    for(key in words_classes) words_json[key] = words_classes[key];
+    for(key in words_login) words_json[key] = words_login[key];
+    for(key in words_register) words_json[key] = words_register[key];
+    for(key in words_main) words_json[key] = words_main[key];
+    for(key in words_basic) words_json[key] = words_basic[key];
+
+    for(key in words_regexp) words[key] = words_regexp[key];
+    for(key in words_archetypes) words[key] = words_archetypes[key];
 
     // used to take a string and ready it for use in new RegExp()
     function prepareRegex(string) {
@@ -387,39 +456,31 @@ GM_addStyle ( `
         }
     }
 
-    //Translation method using regexp
-    //More flexible but higher complexity
-    function translate_regexp() {
+    //Translation method using json key value by default then regexp if words is not found
+    function translate() {
         //Text replacement
-        texts = document.evaluate('//input|//textarea|//body//text()[ normalize-space(.) != "" ]', document, null, 6, null);
+        texts = document.evaluate('//input|//textarea|//body//text()[normalize-space(.) != ""]', document, null, 6, null);
         for (i = 0; text = texts.snapshotItem(i); i++) {
             if ( isTagOk(text.parentNode.tagName) ) {
-                if(text.tagName) {
-                    for (j = 0, len = regexs.length; j < len; j++) {
-                        if (text.getAttribute("value")) text.setAttribute("value", text.getAttribute("value").replace(regexs[j], replacements[j]));
-                        if (text.getAttribute("placeholder")) text.setAttribute("placeholder", text.getAttribute("placeholder").replace(regexs[j], replacements[j]));
+                if(text.tagName) { //For html attribute text translation
+                    for (k = 0; k < attr.length; k++) {
+                        if (text.getAttribute(attr[k])) { //Attribute exist
+                            if(words_json[text.getAttribute(attr[k])]) text.setAttribute(attr[k], words_json[text.getAttribute(attr[k])]); //Translation exist in JSON word list
+                            else {
+                                //Regexp text replacement
+                                for (j = 0, len = regexs.length; j < len; j++) {
+                                    text.setAttribute(attr[k], text.getAttribute(attr[k]).replace(regexs[j], replacements[j]));
+                                }
+                            }
+                        }
                     }
-                } else {
-                    for (j = 0, len = regexs.length; j < len; j++) {
-                        text.data = text.data.replace( regexs[j], replacements[j] );
+                } else { //For raw text translation
+                    if(words_json[text.data]) text.data = words_json[text.data]; //Translation exist in JSON word list
+                    else {
+                        for (j = 0, len = regexs.length; j < len; j++) {
+                            text.data = text.data.replace( regexs[j], replacements[j] ); //Regexp text replacement
+                        }
                     }
-                }
-            }
-        }
-    }
-
-    //Translation method using json key value
-    //Less complexity but needs exact string match
-    function translate_json() {
-        //Text replacement
-        texts = document.evaluate('//input|//textarea|//body//text()[ normalize-space(.) != "" ]', document, null, 6, null);
-        for (i = 0; text = texts.snapshotItem(i); i++) {
-            if ( isTagOk(text.parentNode.tagName) ) {
-                if(text.tagName) {
-                    if(words[text.getAttribute("placeholder")]) text.setAttribute("placeholder", words[text.getAttribute("placeholder")]);
-                    if(words[text.getAttribute("value")]) text.setAttribute("value", words[text.getAttribute("value")]);
-                } else {
-                    if(words[text.data]) text.data = words[text.data];
                 }
             }
         }
@@ -439,7 +500,70 @@ GM_addStyle ( `
         }
     }
 
-    window.addEventListener("load", function(){translate_regexp()}, false);
+    function replaceUnicode (unicode) {
+        switch(unicode) {
+            case "\u30a8\u30eb\u30d5":
+                return "Forest";
+            case "\u30ed\u30a4\u30e4\u30eb":
+                return "Sword";
+            case "\u30c9\u30e9\u30b4\u30f3":
+                return "Dragon";
+            case "\u30cd\u30af\u30ed\u30de\u30f3\u30b5\u30fc":
+                return "Shadow";
+            case "\u30a6\u30a3\u30c3\u30c1":
+                return "Rune";
+            case "\u30f4\u30a1\u30f3\u30d1\u30a4\u30a2":
+                return "Blood";
+            case "\u30d3\u30b7\u30e7\u30c3\u30d7":
+                return "Haven";
+            case "\u30cd\u30e1\u30b7\u30b9":
+                return "Portal";
+        }
+    }
+
+    //Edit and recreate chart
+    var canvases = document.evaluate('//canvas', document, null, 6, null);
+    var canvas, html, parent;
+    for (i = 0; canvas = canvases.snapshotItem(i); i++) {
+        if ((canvas.getAttribute('id') == 'pie_chart') || (canvas.getAttribute('id') == 'bar_chart')) {
+            //Delete current chart canvas
+            parent = canvas.parentNode;
+            html = canvas.parentNode.innerHTML;
+            parent.removeChild(canvas);
+            //Remake empty chart canvas
+            parent.appendChild(document.createElement('canvas'));
+            parent.innerHTML = html;
+
+            if (canvas.getAttribute('id') == 'pie_chart'){
+                var pieData = unsafeWindow.pieData;
+                for (j = 0; j < pieData.length; j++){
+                    obj = pieData[j];
+                    for (key in obj){
+                        if (key == 'label') obj[key] = replaceUnicode(obj[key]);
+                    }
+                }
+                var ctx = document.getElementById("pie_chart").getContext("2d");
+                var myPie = new unsafeWindow.Chart(ctx).Pie(pieData, {
+                    animation : false,
+                });
+            } else if (canvas.getAttribute('id') == 'bar_chart'){
+                var barChartData = unsafeWindow.barChartData;
+                for (j = 0; j < barChartData.labels.length; j++){
+                    barChartData.labels[j] = replaceUnicode(barChartData.labels[j]);
+                }
+                ctx = document.getElementById("bar_chart").getContext("2d");
+                var myBar = new unsafeWindow.Chart(ctx).Bar(barChartData,{
+                    scaleOverride : true,
+                    scaleSteps : 7,
+                    scaleStepWidth : 10,
+                    scaleStartValue : 0,
+                    animation : false,
+                });
+            }
+        }
+    }
+
+    window.addEventListener("load", function(){translate()}, false);
     var form_button = document.querySelector("table.form");
-    if (form_button) form_button.addEventListener('change', function(){translate_regexp()}, false); //Handles list change in /mypage/add
+    if (form_button) form_button.addEventListener('change', function(){translate()}, false); //Handles list change in /mypage/add
 })();
