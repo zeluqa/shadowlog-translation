@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Shadowlog Translation
 // @namespace    https://github.com/zeluqa/
-// @version      1.0
+// @version      1.2
 // @description  Shadowlog english translation userscript
 // @author       zeluqa
 // @match        *://shadowlog.com/*
@@ -40,6 +40,10 @@ GM_addStyle ( `
         'サイトの使い方':'Site Usage',
         'ログアウト':'Log Out',
         'マイページ':'My Page',
+        'お問合せ・バグ報告':'Contact Us',
+        '相互リンク':'Related Websites',
+        'シャドウバース攻略速報':'SV Bulletin',
+        'シャドウバースアンテナ':'SV Antenna',
     };
     var words_trends = {
         //Words exclusive in https://shadowlog.com/trend/
@@ -131,7 +135,6 @@ GM_addStyle ( `
         '使用割合順':'Order by Play Rate',
         '対戦数順':'Order by Matches',
         '全勝率順':'Order by Winrate',
-        'ランクマッチ戦でのみの解析になります。':'ランクマッチ戦でのみの解析になります。',
 
         '対戦相手のリーダー解析':'Enemy Class Comparison',
         '対戦相手のリーダー':'Enemy Class',
@@ -173,6 +176,8 @@ GM_addStyle ( `
         '白狼エルフ':'White Wolf Forest',
         '薔薇エルフ':'Thorn Burst Forest',
         '白銀エルフ':'Silver Bolt Forest',
+        '機械エルフ':'Machina Forest',
+        '自然エルフ':'Natura Forest',
 
         //Sword Archetypes
         'ロイヤル全般':'Sword in General',
@@ -187,6 +192,9 @@ GM_addStyle ( `
         '潜伏ロイヤル':'Ambush Sword',
         '冥府ロイヤル':'Path to Purgatory Sword',
         '援護射撃ロイヤル':'Support Cannon Sword',
+        'スパルタクスロイヤル':'Spartacus Sword',
+        '機械ロイヤル':'Machina Sword',
+        '自然ロイヤル':'Natura Sword',
 
         //Dragon Archetypes
         'ドラゴン全般':'Dragon in General',
@@ -201,9 +209,12 @@ GM_addStyle ( `
         'OTKドラゴン':'OTK Dragon',
         'ディスカードドラゴン':'Discard Dragon',
         'フェイスドラゴン':'Face Dragon',
-        'サタンドラゴン':'Prince of Darkness Dragon',
+        'サタンドラゴン':'Cocytus Dragon',
         '疾走ドラゴン':'Storm Dragon',
         '庭園ドラゴン':'Phoenix Roost Dragon',
+        '侮蔑ドラゴン':'Disdain Dragon',
+        '機械ドラゴン':'Machina Dragon',
+        '自然ドラゴン':'Natura Dragon',
 
         //Shadow Archetypes
         'ネクロマンサー全般':'Shadow in General',
@@ -217,6 +228,9 @@ GM_addStyle ( `
         'ニュートラルネクロ':'Neutral Shadow',
         'タイラントネクロ':'Tyrant Shadow',
         '冥府ネクロ':'Path to Purgatory Shadow',
+        'アーカスネクロ':'Arcus Shadow',
+        '機械ネクロ':'Machina Shadow',
+        '自然ネクロ':'Natura Shadow',
 
         //Rune Archetypes
         'ウィッチ全般':'Rune in General',
@@ -231,6 +245,10 @@ GM_addStyle ( `
         'アグロウィッチ':'Aggro Rune',
         '冥府ウィッチ':'Path to Purgatory Rune',
         '魔導ウィッチ':'Hulking Giant Rune',
+        '機械ウィッチ':'Machina Rune',
+        'スペルウィッチ':'Spellboost Rune',
+        '開闢ウィッチ':'Prophetess Rune',
+        'バーンウィッチ':'Burn Rune',
 
         //Blood Archetypes
         'ヴァンパイア全般':'Blood in General',
@@ -244,6 +262,8 @@ GM_addStyle ( `
         'ニュートラルヴァンプ':'Neutral Blood',
         '疾走ヴァンパイア':'Storm Blood',
         '冥府ヴァンパイア':'Path to Purgatory Blood',
+        '機械ヴァンプ':'Machina Blood',
+        '自然ヴァンプ':'Natura Blood',
 
         //Haven Archetypes
         'ビショップ全般':'Haven in General',
@@ -263,6 +283,9 @@ GM_addStyle ( `
         '冥府ビショップ':'Path to Purgatory Haven',
         'レリアビショップ':'Laelia Haven',
         '聖杯ビショップ':'Tarnished Grail Haven',
+        '黄金都市ビショップ':'City of Gold Haven',
+        '機械ビショップ':'Machina Haven',
+        '自然ビショップ':'Natura Haven',
 
         //Portal Archetype
         'ネメシス全般':'Portal in General',
@@ -272,6 +295,9 @@ GM_addStyle ( `
         'アーティファクトネメシス':'Artifact Portal',
         'アグロネメシス':'Aggro Portal',
         'コントロールネメシス':'Control Portal',
+        'リーシェナネメシス':'Lishenna Portal',
+        '機械ネメシス':'Machina Portal',
+        '自然ネメシス':'Natura Portal',
     };
     var words_classes = {
         //Class Names
@@ -350,10 +376,10 @@ GM_addStyle ( `
         '分':'Minute', */
     };
     var words_regexp = {
-        /* Use \\* to match actual asterisks instead of using it as a wildcard
+        /* Replace partial words here
         Syntax: 'Search word' : 'Replace word',
-        '/\\bD\\b/g' : '[D]',
-        More complex words/text should be on top to prevent incomplete text replacement*/
+        Note: use \\* to match actual asterisks instead of using it as a wildcard
+        More complex words/text should be on top to prevent incomplete text replacement */
 
         //Words for regexp text replacement method
         'ジャバウォックドラゴ*':'Jabberwock Dragon',
@@ -368,6 +394,8 @@ GM_addStyle ( `
         '記録した戦績を修正する':'Edit past match record',
         'フリー':'Private',
         'ローテ':'Rotation',
+        'アンリミ':'Unlimited',
+        '以下':' or lower',
 
         '対戦解析ログ':'Match Data',
         '算出に使った対戦数':'Total Recorded Number of Matches',
@@ -379,7 +407,7 @@ GM_addStyle ( `
         'メールアドレスへパスワード変更用のURLを記載したメールを送信しました。':'Please check your email address for the URL to reset your password.',
         'メールアドレスもわからない、上手くメールが届かないという方は':'In case of forgotten email address or mail not being sent properly,',
         'お手数ですが':'Please use the',
-        'お問い合わせ':'Inqury',
+        'お問い合わせ':'Inquiry',
         'へご連絡下さい。':'function to contact us.',
         '変更が失敗してしまう場合は':'When password resetting failed, please use the',
         'からご連絡下さい。':'function to contact us.',
@@ -395,7 +423,7 @@ GM_addStyle ( `
         '日':'',
         '時':':',
         '分':'',
-        '回':'',
+        '回':'',      
     }
 
     var regexs = [], replacements = [],
