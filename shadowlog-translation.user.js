@@ -3,7 +3,8 @@
 // @namespace    https://github.com/zeluqa/
 // @version      1.2
 // @description  Shadowlog english translation userscript
-// @author       zeluqa
+// @author       zeluqa 
+// @contributor  bagdet45, azules500
 // @match        *://shadowlog.com/*
 // @grant        GM_addStyle
 // ==/UserScript==
